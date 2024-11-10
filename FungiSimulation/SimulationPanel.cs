@@ -64,6 +64,18 @@ public class SimulationPanel : Panel
         // Initialize the grid state
         gridState = new int[gridWidth, gridHeight,5];
 
+        for(int i = 0; i < gridWidth; i++)
+        {
+            for(int j = 0; j < gridHeight; j++)
+            {
+                gridState[i,j,1] = 128;
+                gridState[i, j, 2] = 128;
+                gridState[i, j, 3] = 25;
+                gridState[i, j, 4] = 10;
+
+            }
+        }
+
         gridBitmap = new Bitmap[5];
 
         for (int i = 0; i < 5; i++) {
@@ -176,9 +188,32 @@ public class SimulationPanel : Panel
 
             });
 
+        }
 
+        if (e.Button == MouseButtons.Right && SimulationMode == SimulationMode.Food)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] > 0)
+                {
+                    gridState[cellX, cellY, currentGrid] -= 1;
+                }
+            }
+
+            Task.Run(() => {
+
+                RenderChangeOnClick(cellX, cellY);
+
+                Invalidate(new Rectangle(0, 0, Width, Height));
+
+            });
 
         }
+
     }
 
     private void SimulationPanel_MouseDownFoodGrowth(object? sender, MouseEventArgs e)
@@ -201,6 +236,30 @@ public class SimulationPanel : Panel
             RenderChangeOnClick(cellX, cellY);
 
             Invalidate(new Rectangle(0, 0, Width, Height));
+
+        }
+
+        if (e.Button == MouseButtons.Right && SimulationMode == SimulationMode.Food)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] > 0)
+                {
+                    gridState[cellX, cellY, currentGrid] -= 1;
+                }
+            }
+
+            Task.Run(() => {
+
+                RenderChangeOnClick(cellX, cellY);
+
+                Invalidate(new Rectangle(0, 0, Width, Height));
+
+            });
 
         }
     }
@@ -233,6 +292,30 @@ public class SimulationPanel : Panel
 
 
         }
+
+        if (e.Button == MouseButtons.Right && SimulationMode == SimulationMode.Water)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] > 0)
+                {
+                    gridState[cellX, cellY, currentGrid] -= 1;
+                }
+            }
+
+            Task.Run(() => {
+
+                RenderChangeOnClick(cellX, cellY);
+
+                Invalidate(new Rectangle(0, 0, Width, Height));
+
+            });
+
+        }
     }
 
     private void SimulationPanel_MouseDownWaterGrowth(object? sender, MouseEventArgs e)
@@ -255,6 +338,30 @@ public class SimulationPanel : Panel
             RenderChangeOnClick(cellX, cellY);
 
             Invalidate(new Rectangle(0, 0, Width, Height));
+
+        }
+
+        if (e.Button == MouseButtons.Right && SimulationMode == SimulationMode.Water)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] > 0)
+                {
+                    gridState[cellX, cellY, currentGrid] -= 1;
+                }
+            }
+
+            Task.Run(() => {
+
+                RenderChangeOnClick(cellX, cellY);
+
+                Invalidate(new Rectangle(0, 0, Width, Height));
+
+            });
 
         }
     }
@@ -392,6 +499,30 @@ public class SimulationPanel : Panel
 
 
         }
+
+        if (e.Button == MouseButtons.Right && SimulationMode == SimulationMode.Accessibility)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] > 0)
+                {
+                    gridState[cellX, cellY, currentGrid] -= 1;
+                }
+            }
+
+            Task.Run(() => {
+
+                RenderChangeOnClick(cellX, cellY);
+
+                Invalidate(new Rectangle(0, 0, Width, Height));
+
+            });
+
+        }
     }
 
     private void SimulationPanel_MouseDownObstacleGrowth(object? sender, MouseEventArgs e)
@@ -416,20 +547,31 @@ public class SimulationPanel : Panel
             Invalidate(new Rectangle(0, 0, Width, Height));
 
         }
+
+        if (e.Button == MouseButtons.Right && SimulationMode == SimulationMode.Accessibility)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] > 0)
+                {
+                    gridState[cellX, cellY, currentGrid] -= 1;
+                }
+            }
+
+            Task.Run(() => {
+
+                RenderChangeOnClick(cellX, cellY);
+
+                Invalidate(new Rectangle(0, 0, Width, Height));
+
+            });
+
+        }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private void RenderChangeOnClick(int cellX,int cellY)

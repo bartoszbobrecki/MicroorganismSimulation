@@ -11,7 +11,7 @@ public class SimulationPanel : Panel
     private int CellSize; // Size of each cell in the grid
     private int gridWidth; // Number of cells in width
     private int gridHeight; // Number of cells in height
-    private bool[,] gridState; // 2D array to hold the state of each cell
+    private int[,,] gridState; // 2D array to hold the state of each cell
     private Point dragStart; // Start point for dragging
     private bool isDragging = false;
     private SimulationMode simulationMode;
@@ -23,17 +23,34 @@ public class SimulationPanel : Panel
             if (simulationMode != value)
             {
                 form.ChangeButtonHighlights(simulationMode,value);
+                if ( (int)value != 0 && currentGrid != (int)value - 1)
+                {
+
+                    currentGrid = (int)value - 1;
+
+                    Task.Run( () => {
+                        RenderGridToBitmap();
+                    } );
+                    
+
+                }
+
                 simulationMode = value;
+                
             }
         }
     }
+
+    private int currentGrid = 0;
 
     private Point lastMousePosition;
     private int offsetX;
     private int offsetY;
     private readonly FungiSimulationForm form;
-    private Bitmap gridBitmap;
+    private Bitmap[] gridBitmap;
     private float zoomFactor = 1.0f;
+
+
 
 
     public SimulationPanel(FungiSimulationForm _form)
@@ -45,9 +62,15 @@ public class SimulationPanel : Panel
         offsetX = -(gridWidth * CellSize + 1) / 2;
         offsetY = -(gridHeight * CellSize + 1) / 2;
         // Initialize the grid state
-        gridState = new bool[gridWidth, gridHeight];
+        gridState = new int[gridWidth, gridHeight,5];
 
-        gridBitmap = new Bitmap(gridWidth * CellSize+1, gridHeight * CellSize+1);
+        gridBitmap = new Bitmap[5];
+
+        for (int i = 0; i < 5; i++) {
+            gridBitmap[i] = new Bitmap(gridWidth * CellSize + 1, gridHeight * CellSize + 1);
+        }
+
+
 
         RenderGridToBitmap();
 
@@ -62,6 +85,14 @@ public class SimulationPanel : Panel
 
         this.MouseDown += SimulationPanel_MouseDownFungiGrowth;
         this.MouseMove += SimulationPanel_MouseMoveFungiGrowth;
+        this.MouseDown += SimulationPanel_MouseDownFoodGrowth;
+        this.MouseMove += SimulationPanel_MouseMoveFoodGrowth;
+        this.MouseDown += SimulationPanel_MouseDownWaterGrowth;
+        this.MouseMove += SimulationPanel_MouseMoveWaterGrowth;
+        this.MouseDown += SimulationPanel_MouseDownTemperatureGrowth;
+        this.MouseMove += SimulationPanel_MouseMoveTemperatureGrowth;
+        this.MouseDown += SimulationPanel_MouseDownObstacleGrowth;
+        this.MouseMove += SimulationPanel_MouseMoveObstacleGrowth;
         SimulationMode = SimulationMode.Cursor;
         form = _form;
     }
@@ -76,7 +107,10 @@ public class SimulationPanel : Panel
 
             if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
             {
-                gridState[cellX, cellY] = true;
+                if (gridState[cellX, cellY, currentGrid] < 255)
+                {
+                    gridState[cellX, cellY, currentGrid] += 1;
+                }
             }
 
             Task.Run(() => {
@@ -102,7 +136,11 @@ public class SimulationPanel : Panel
 
             if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
             {
-                gridState[cellX, cellY] = true; 
+                if(gridState[cellX, cellY, currentGrid] < 255)
+                {
+                    gridState[cellX, cellY, currentGrid] += 1;
+                }
+                
             }
 
             RenderChangeOnClick(cellX, cellY);
@@ -112,11 +150,315 @@ public class SimulationPanel : Panel
         }
     }
 
+
+
+    private void SimulationPanel_MouseMoveFoodGrowth(object? sender, MouseEventArgs e)
+    {
+        if (e.Button == MouseButtons.Left && SimulationMode == SimulationMode.Food)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] < 255)
+                {
+                    gridState[cellX, cellY, currentGrid] += 1;
+                }
+            }
+
+            Task.Run(() => {
+
+                RenderChangeOnClick(cellX, cellY);
+
+                Invalidate(new Rectangle(0, 0, Width, Height));
+
+            });
+
+
+
+        }
+    }
+
+    private void SimulationPanel_MouseDownFoodGrowth(object? sender, MouseEventArgs e)
+    {
+        if (e.Button == MouseButtons.Left && SimulationMode == SimulationMode.Food)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] < 255)
+                {
+                    gridState[cellX, cellY, currentGrid] += 1;
+                }
+
+            }
+
+            RenderChangeOnClick(cellX, cellY);
+
+            Invalidate(new Rectangle(0, 0, Width, Height));
+
+        }
+    }
+
+
+    private void SimulationPanel_MouseMoveWaterGrowth(object? sender, MouseEventArgs e)
+    {
+        if (e.Button == MouseButtons.Left && SimulationMode == SimulationMode.Water)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] < 255)
+                {
+                    gridState[cellX, cellY, currentGrid] += 1;
+                }
+            }
+
+            Task.Run(() => {
+
+                RenderChangeOnClick(cellX, cellY);
+
+                Invalidate(new Rectangle(0, 0, Width, Height));
+
+            });
+
+
+
+        }
+    }
+
+    private void SimulationPanel_MouseDownWaterGrowth(object? sender, MouseEventArgs e)
+    {
+        if (e.Button == MouseButtons.Left && SimulationMode == SimulationMode.Water)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] < 255)
+                {
+                    gridState[cellX, cellY, currentGrid] += 1;
+                }
+
+            }
+
+            RenderChangeOnClick(cellX, cellY);
+
+            Invalidate(new Rectangle(0, 0, Width, Height));
+
+        }
+    }
+
+    private void SimulationPanel_MouseMoveTemperatureGrowth(object? sender, MouseEventArgs e)
+    {
+        if (e.Button == MouseButtons.Left && SimulationMode == SimulationMode.Temperature)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] < 70)
+                {
+                    gridState[cellX, cellY, currentGrid] += 1;
+                }
+            }
+
+            Task.Run(() => {
+
+                RenderChangeOnClick(cellX, cellY);
+
+                Invalidate(new Rectangle(0, 0, Width, Height));
+
+            });
+
+        }
+
+        if (e.Button == MouseButtons.Right && SimulationMode == SimulationMode.Temperature)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] > -5)
+                {
+                    gridState[cellX, cellY, currentGrid] -= 1;
+                }
+            }
+
+            Task.Run(() => {
+
+                RenderChangeOnClick(cellX, cellY);
+
+                Invalidate(new Rectangle(0, 0, Width, Height));
+
+            });
+
+        }
+
+
+    }
+
+    private void SimulationPanel_MouseDownTemperatureGrowth(object? sender, MouseEventArgs e)
+    {
+        if (e.Button == MouseButtons.Left && SimulationMode == SimulationMode.Temperature)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] < 70)
+                {
+                    gridState[cellX, cellY, currentGrid] += 1;
+                }
+            }
+
+            Task.Run(() => {
+
+                RenderChangeOnClick(cellX, cellY);
+
+                Invalidate(new Rectangle(0, 0, Width, Height));
+
+            });
+
+        }
+
+        if (e.Button == MouseButtons.Right && SimulationMode == SimulationMode.Temperature)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] > -5)
+                {
+                    gridState[cellX, cellY, currentGrid] -= 1;
+                }
+            }
+
+            Task.Run(() => {
+
+                RenderChangeOnClick(cellX, cellY);
+
+                Invalidate(new Rectangle(0, 0, Width, Height));
+
+            });
+
+        }
+    }
+
+
+
+    private void SimulationPanel_MouseMoveObstacleGrowth(object? sender, MouseEventArgs e)
+    {
+        if (e.Button == MouseButtons.Left && SimulationMode == SimulationMode.Accessibility)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] < 255)
+                {
+                    gridState[cellX, cellY, currentGrid] += 1;
+                }
+            }
+
+            Task.Run(() => {
+
+                RenderChangeOnClick(cellX, cellY);
+
+                Invalidate(new Rectangle(0, 0, Width, Height));
+
+            });
+
+
+
+        }
+    }
+
+    private void SimulationPanel_MouseDownObstacleGrowth(object? sender, MouseEventArgs e)
+    {
+        if (e.Button == MouseButtons.Left && SimulationMode == SimulationMode.Accessibility)
+        {
+
+            int cellX = (e.X - offsetX) / CellSize;
+            int cellY = (e.Y - offsetY) / CellSize;
+
+            if (cellX >= 0 && cellX < gridWidth && cellY >= 0 && cellY < gridHeight)
+            {
+                if (gridState[cellX, cellY, currentGrid] < 255)
+                {
+                    gridState[cellX, cellY, currentGrid] += 1;
+                }
+
+            }
+
+            RenderChangeOnClick(cellX, cellY);
+
+            Invalidate(new Rectangle(0, 0, Width, Height));
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private void RenderChangeOnClick(int cellX,int cellY)
     {
-        using Graphics g = Graphics.FromImage(gridBitmap);
+        using Graphics g = Graphics.FromImage(gridBitmap[currentGrid]);
 
-        Color cellColor = ColorTranslator.FromHtml("#1544ed");
+        Color cellColor;
+
+        switch (currentGrid)
+        {
+            case 0:
+                cellColor = ColorGenerator.GenerateFungiColor(gridState[cellX, cellY, currentGrid]);
+                break;
+            case 1:
+                cellColor = ColorGenerator.GenerateFoodColor(gridState[cellX, cellY, currentGrid]);
+                break;
+            case 2:
+                cellColor = ColorGenerator.GenerateWaterColor(gridState[cellX, cellY, currentGrid]);
+                break;
+            case 3:
+                cellColor = ColorGenerator.GenerateTemperatureColor(gridState[cellX, cellY, currentGrid]);
+                break;
+            case 4:
+                cellColor = ColorGenerator.GenerateObstacleColor(gridState[cellX, cellY, currentGrid]);
+                break;
+            default:
+                cellColor = Color.FromArgb(30,30,30);
+                break;
+        }
 
         using Brush brush = new SolidBrush(cellColor);
 
@@ -126,28 +468,134 @@ public class SimulationPanel : Panel
 
     private void RenderGridToBitmap()
     {
-        using Graphics g = Graphics.FromImage(gridBitmap);
+        using Graphics g = Graphics.FromImage(gridBitmap[currentGrid]);
 
+        switch (currentGrid)
+        {
+            case 0:
+                RenderGridToBitmapOrganisms();
+                break;
+            case 1:
+                RenderGridToBitmapFood();
+                break;
+            case 2:
+                RenderGridToBitmapWater();
+                break;
+            case 3:
+                RenderGridToBitmapTemperature();
+                break;
+            case 4:
+                RenderGridToBitmapAccessibility();
+                break;
+        }
+
+        Invalidate(new Rectangle(0, 0, Width, Height));
+    }
+
+    private void RenderGridToBitmapOrganisms()
+    {
+        using Graphics g = Graphics.FromImage(gridBitmap[currentGrid]);
 
         for (int x = 0; x < gridWidth; x++)
         {
             for (int y = 0; y < gridHeight; y++)
             {
 
-                using (Brush brush = new SolidBrush(Color.FromArgb(30, 30, 30)))
+                using (Brush brush = new SolidBrush(ColorGenerator.GenerateFungiColor(gridState[x, y, currentGrid])))
                 {
-                    g.FillRectangle(brush, x * CellSize, y * CellSize, CellSize, CellSize);
+                    g.FillRectangle(brush, x * BaseCellSize, y * BaseCellSize, BaseCellSize, BaseCellSize);
                 }
 
-                g.DrawRectangle(new Pen(Color.FromArgb(150, 150, 150)), x * CellSize, y * CellSize, CellSize, CellSize);
+                g.DrawRectangle(new Pen(Color.FromArgb(150, 150, 150)), x * BaseCellSize, y * BaseCellSize, BaseCellSize, BaseCellSize);
             }
         }
     }
 
+    private void RenderGridToBitmapFood()
+    {
+        using Graphics g = Graphics.FromImage(gridBitmap[currentGrid]);
+
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+
+                using (Brush brush = new SolidBrush(ColorGenerator.GenerateFoodColor(gridState[x, y, currentGrid])))
+                {
+                    g.FillRectangle(brush, x * BaseCellSize, y * BaseCellSize, BaseCellSize, BaseCellSize);
+                }
+
+                g.DrawRectangle(new Pen(Color.FromArgb(150, 150, 150)), x * BaseCellSize, y * BaseCellSize, BaseCellSize, BaseCellSize);
+            }
+        }
+    }
+
+    private void RenderGridToBitmapWater()
+    {
+        using Graphics g = Graphics.FromImage(gridBitmap[currentGrid]);
+
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+
+                using (Brush brush = new SolidBrush(ColorGenerator.GenerateWaterColor(gridState[x, y, currentGrid])))
+                {
+                    g.FillRectangle(brush, x * BaseCellSize, y * BaseCellSize, BaseCellSize, BaseCellSize);
+                }
+
+                g.DrawRectangle(new Pen(Color.FromArgb(150, 150, 150)), x * BaseCellSize, y * BaseCellSize, BaseCellSize, BaseCellSize);
+            }
+        }
+    }
+
+    private void RenderGridToBitmapTemperature()
+    {
+        using Graphics g = Graphics.FromImage(gridBitmap[currentGrid]);
+
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+
+                using (Brush brush = new SolidBrush(ColorGenerator.GenerateTemperatureColor(gridState[x, y, currentGrid])))
+                {
+                    g.FillRectangle(brush, x * BaseCellSize, y * BaseCellSize, BaseCellSize, BaseCellSize);
+                }
+
+                g.DrawRectangle(new Pen(Color.FromArgb(150, 150, 150)), x * BaseCellSize, y * BaseCellSize, BaseCellSize, BaseCellSize);
+            }
+        }
+    }
+
+    private void RenderGridToBitmapAccessibility()
+    {
+        using Graphics g = Graphics.FromImage(gridBitmap[currentGrid]);
+
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+
+                using (Brush brush = new SolidBrush(ColorGenerator.GenerateObstacleColor(gridState[x, y, currentGrid])))
+                {
+                    g.FillRectangle(brush, x * BaseCellSize, y * BaseCellSize, BaseCellSize, BaseCellSize);
+                }
+
+                g.DrawRectangle(new Pen(Color.FromArgb(150, 150, 150)), x * BaseCellSize, y * BaseCellSize, BaseCellSize, BaseCellSize);
+            }
+        }
+    }
+
+
+
+
+
+
     private void SimulationGrowthPanel_Paint(object sender, PaintEventArgs e)
     {
 
-        e.Graphics.DrawImage(gridBitmap, new Rectangle(offsetX, offsetY, (int)(gridBitmap.Width * zoomFactor), (int)(gridBitmap.Height * zoomFactor)));
+        e.Graphics.DrawImage(gridBitmap[currentGrid], new Rectangle(offsetX, offsetY, (int)(gridBitmap[currentGrid].Width * zoomFactor), (int)(gridBitmap[currentGrid].Height * zoomFactor)));
     }
     protected override void OnMouseWheel(MouseEventArgs e)
     {

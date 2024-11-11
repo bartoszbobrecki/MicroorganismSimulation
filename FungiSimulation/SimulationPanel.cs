@@ -11,7 +11,7 @@ public class SimulationPanel : Panel
     private int CellSize; // Size of each cell in the grid
     private int gridWidth; // Number of cells in width
     private int gridHeight; // Number of cells in height
-    private int[,,] gridState; // 2D array to hold the state of each cell
+    public int[,,] gridState; // 2D array to hold the state of each cell
     private Point dragStart; // Start point for dragging
     private bool isDragging = false;
     private SimulationMode simulationMode;
@@ -49,12 +49,14 @@ public class SimulationPanel : Panel
     private readonly FungiSimulationForm form;
     private Bitmap[] gridBitmap;
     private float zoomFactor = 1.0f;
+    public Point cellHoveredOnByMouse;
 
 
 
 
     public SimulationPanel(FungiSimulationForm _form)
     {
+        cellHoveredOnByMouse = new Point();
         CellSize = BaseCellSize;
         gridHeight = 200;
         gridWidth = gridHeight * (Width/Height);
@@ -584,18 +586,23 @@ public class SimulationPanel : Panel
         {
             case 0:
                 cellColor = ColorGenerator.GenerateFungiColor(gridState[cellX, cellY, currentGrid]);
+                form.showPanelPanel.UpdateOrganismGrowth( gridState[cellHoveredOnByMouse.X,cellHoveredOnByMouse.Y,0] );
                 break;
             case 1:
                 cellColor = ColorGenerator.GenerateFoodColor(gridState[cellX, cellY, currentGrid]);
+                form.showPanelPanel.UpdateFoodAmount(gridState[cellHoveredOnByMouse.X, cellHoveredOnByMouse.Y, 1]);
                 break;
             case 2:
                 cellColor = ColorGenerator.GenerateWaterColor(gridState[cellX, cellY, currentGrid]);
+                form.showPanelPanel.UpdateWaterAmount(gridState[cellHoveredOnByMouse.X, cellHoveredOnByMouse.Y, 2]);
                 break;
             case 3:
                 cellColor = ColorGenerator.GenerateTemperatureColor(gridState[cellX, cellY, currentGrid]);
+                form.showPanelPanel.UpdateTemperature(gridState[cellHoveredOnByMouse.X, cellHoveredOnByMouse.Y, 3]);
                 break;
             case 4:
                 cellColor = ColorGenerator.GenerateObstacleColor(gridState[cellX, cellY, currentGrid]);
+                form.showPanelPanel.UpdateAccessibility(gridState[cellHoveredOnByMouse.X, cellHoveredOnByMouse.Y, 4]);
                 break;
             default:
                 cellColor = Color.FromArgb(30,30,30);
@@ -776,6 +783,20 @@ public class SimulationPanel : Panel
 
     private void SimulationGrowthPanel_MouseMove(object sender, MouseEventArgs e)
     {
+        if ( cellHoveredOnByMouse.X != (e.X - offsetX) / CellSize || cellHoveredOnByMouse.Y != (e.Y - offsetY) / CellSize )
+        {
+            int x = (e.X - offsetX) / CellSize;
+            int y = (e.Y - offsetY) / CellSize;
+
+            cellHoveredOnByMouse.X = x;
+            cellHoveredOnByMouse.Y = y;
+            if (x < gridWidth && y < gridHeight)
+            {
+                form.showPanelPanel.UpdateDisplay(x, y, gridState[x, y, 0], gridState[x, y, 1], gridState[x, y, 2], gridState[x, y, 3], gridState[x, y, 4]);
+            }
+            
+        }
+
 
 
         if (isDragging)

@@ -3,9 +3,24 @@ namespace FungiSimulation
 {
     partial class FungiSimulationForm
     {
-        /// <summary>
-        ///  Required designer variable.
-        /// </summary>
+
+        private GroupBox tools;
+        private DataGridView dataGrid;
+        private Panel dataGridGroupBox;
+        private Panel innerDataGridGroupBox;
+        private Button cursorButton;
+        private Button fungiButton;
+        private Button foodButton;
+        private Button waterButton;
+        private Button temperatureButton;
+        private Button accessibilityButton;
+        private List<Button> buttons;
+        private Panel showPanel;
+        private Panel innerShowPanel;
+        public ShowPanel showPanelPanel;
+
+        SimulationPanel simulationPanel;
+
         private System.ComponentModel.IContainer components = null;
 
 
@@ -21,7 +36,7 @@ namespace FungiSimulation
         {
 
 
-            buttons = new List<Button> ();
+            buttons = new List<Button>();
             tools = new GroupBox();
             dataGridGroupBox = new Panel();
             innerDataGridGroupBox = new Panel();
@@ -38,7 +53,15 @@ namespace FungiSimulation
             buttons.Add(temperatureButton);
             buttons.Add(accessibilityButton);
 
+            showPanel = new Panel();
+            innerShowPanel = new Panel();
+
             simulationPanel = new SimulationPanel(this)
+            {
+                Dock = DockStyle.Top | DockStyle.Fill,
+            };
+
+            showPanelPanel = new ShowPanel(simulationPanel)
             {
                 Dock = DockStyle.Top | DockStyle.Fill,
             };
@@ -64,6 +87,30 @@ namespace FungiSimulation
             tools.Controls.Add(waterButton);
             tools.Controls.Add(temperatureButton);
             tools.Controls.Add(accessibilityButton);
+            tools.Controls.Add(showPanel);
+
+
+            showPanel.Location = new Point(390, 20);
+            showPanel.Name = "ShowPanel";
+            showPanel.Size = new Size(303, 70);
+            showPanel.TabIndex = 1;
+            showPanel.TabStop = false;
+            showPanel.Text = "";
+            showPanel.Controls.Add(innerShowPanel);
+            showPanel.BackColor = Color.FromArgb(220, 220, 220);
+            showPanel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+            innerShowPanel.Location = new Point(1, 1);
+            innerShowPanel.Name = "innerShowPanel";
+            innerShowPanel.Size = new Size(showPanel.Width-2, showPanel.Height - 2);
+            innerShowPanel.TabIndex = 1;
+            innerShowPanel.TabStop = false;
+            innerShowPanel.Text = "";
+            innerShowPanel.BackColor = Color.FromArgb(30, 30, 30);
+            innerShowPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+            innerShowPanel.Controls.Add(showPanelPanel);
+
+
             //
             // buttons
             //
@@ -118,7 +165,7 @@ namespace FungiSimulation
 
 
 
-            Bitmap cursorBitmapButton = new Bitmap(64, 64); 
+            Bitmap cursorBitmapButton = new Bitmap(64, 64);
 
             using (Graphics g = Graphics.FromImage(cursorBitmapButton))
             {
@@ -279,7 +326,7 @@ namespace FungiSimulation
 
                     this.Cursor = new Cursor(fungiBitmap.GetHicon());
 
-                break;
+                    break;
 
                 case SimulationMode.Cursor:
 
@@ -294,7 +341,7 @@ namespace FungiSimulation
 
                     this.Cursor = new Cursor(cursorBitmap.GetHicon());
 
-                break;
+                    break;
 
                 case SimulationMode.Food:
 
@@ -309,7 +356,7 @@ namespace FungiSimulation
 
                     this.Cursor = new Cursor(foodBitmap.GetHicon());
 
-                break;
+                    break;
 
                 case SimulationMode.Water:
 
@@ -324,7 +371,7 @@ namespace FungiSimulation
 
                     this.Cursor = new Cursor(waterBitmap.GetHicon());
 
-                break;
+                    break;
 
                 case SimulationMode.Temperature:
 
@@ -339,7 +386,7 @@ namespace FungiSimulation
 
                     this.Cursor = new Cursor(temperatureBitmap.GetHicon());
 
-                break;
+                    break;
 
                 case SimulationMode.Accessibility:
 
@@ -354,23 +401,8 @@ namespace FungiSimulation
 
                     this.Cursor = new Cursor(accessibilityBitmap.GetHicon());
 
-                break;
+                    break;
             }
         }
-
-
-        private GroupBox tools;
-        private DataGridView dataGrid;
-        private Panel dataGridGroupBox;
-        private Panel innerDataGridGroupBox;
-        private Button cursorButton;
-        private Button fungiButton;
-        private Button foodButton;
-        private Button waterButton;
-        private Button temperatureButton;
-        private Button accessibilityButton;
-        private List<Button> buttons;
-
-        SimulationPanel simulationPanel;
     }
 }

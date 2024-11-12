@@ -20,6 +20,7 @@ namespace FungiSimulation
         public ShowPanel showPanelPanel;
 
         SimulationPanel simulationPanel;
+        public Simulation Simulation;
 
         private System.ComponentModel.IContainer components = null;
 
@@ -274,6 +275,12 @@ namespace FungiSimulation
             //((System.ComponentModel.ISupportInitialize)dataGrid).EndInit();
             ResumeLayout(false);
             PerformLayout();
+
+            Simulation = new Simulation();
+
+            Task.Run(() => {
+                Simulation.Start(simulationPanel);
+            });
         }
 
         private void AccessibilityButton_Click(object sender, EventArgs e)

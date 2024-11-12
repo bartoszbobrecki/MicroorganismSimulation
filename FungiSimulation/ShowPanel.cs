@@ -55,9 +55,11 @@ namespace FungiSimulation
             Temperature = temperature;
             Accessibility = accessibility;
 
-            // Trigger a repaint to update the displayed text
+
             this.Invalidate();
         }
+
+
 
         public void UpdateOrganismGrowth(int value)
         {

@@ -9,8 +9,8 @@ public class SimulationPanel : Panel
 {
     private int BaseCellSize = 20;
     private int CellSize; // Size of each cell in the grid
-    private int gridWidth; // Number of cells in width
-    private int gridHeight; // Number of cells in height
+    public int gridWidth; // Number of cells in width
+    public int gridHeight; // Number of cells in height
     public int[,,] gridState; // 2D array to hold the state of each cell
     private Point dragStart; // Start point for dragging
     private bool isDragging = false;
@@ -46,7 +46,7 @@ public class SimulationPanel : Panel
     private Point lastMousePosition;
     private int offsetX;
     private int offsetY;
-    private readonly FungiSimulationForm form;
+    public readonly FungiSimulationForm form;
     private Bitmap[] gridBitmap;
     private float zoomFactor = 1.0f;
     public Point cellHoveredOnByMouse;
@@ -124,12 +124,17 @@ public class SimulationPanel : Panel
                 if (gridState[cellX, cellY, currentGrid] < 255)
                 {
                     gridState[cellX, cellY, currentGrid] += 1;
+                    if (!form.Simulation.currentOrganismCells.Contains(new Point(cellX, cellY)))
+                    {
+                        form.Simulation.currentOrganismCells.Add(new Point(cellX, cellY));
+                        form.Simulation.repeat.Add(form.Simulation.currentOrganismCells.Last(), 0);
+                    }
                 }
             }
 
             Task.Run(() => {
 
-                RenderChangeOnClick(cellX, cellY);
+                RenderChangeOnClick(cellX, cellY,currentGrid);
 
                 Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -153,11 +158,17 @@ public class SimulationPanel : Panel
                 if(gridState[cellX, cellY, currentGrid] < 255)
                 {
                     gridState[cellX, cellY, currentGrid] += 1;
+                    if ( !form.Simulation.currentOrganismCells.Contains(new Point(cellX, cellY)) )
+                    {
+                        form.Simulation.currentOrganismCells.Add(new Point(cellX, cellY));
+                        form.Simulation.repeat.Add(form.Simulation.currentOrganismCells.Last(), 0);
+                    }
+                    
                 }
                 
             }
 
-            RenderChangeOnClick(cellX, cellY);
+            RenderChangeOnClick(cellX, cellY, currentGrid);
 
             Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -184,7 +195,7 @@ public class SimulationPanel : Panel
 
             Task.Run(() => {
 
-                RenderChangeOnClick(cellX, cellY);
+                RenderChangeOnClick(cellX, cellY, currentGrid);
 
                 Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -208,7 +219,7 @@ public class SimulationPanel : Panel
 
             Task.Run(() => {
 
-                RenderChangeOnClick(cellX, cellY);
+                RenderChangeOnClick(cellX, cellY, currentGrid);
 
                 Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -235,7 +246,7 @@ public class SimulationPanel : Panel
 
             }
 
-            RenderChangeOnClick(cellX, cellY);
+            RenderChangeOnClick(cellX, cellY, currentGrid);
 
             Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -257,7 +268,7 @@ public class SimulationPanel : Panel
 
             Task.Run(() => {
 
-                RenderChangeOnClick(cellX, cellY);
+                RenderChangeOnClick(cellX, cellY, currentGrid);
 
                 Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -285,7 +296,7 @@ public class SimulationPanel : Panel
 
             Task.Run(() => {
 
-                RenderChangeOnClick(cellX, cellY);
+                RenderChangeOnClick(cellX, cellY, currentGrid);
 
                 Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -311,7 +322,7 @@ public class SimulationPanel : Panel
 
             Task.Run(() => {
 
-                RenderChangeOnClick(cellX, cellY);
+                RenderChangeOnClick(cellX, cellY, currentGrid);
 
                 Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -337,7 +348,7 @@ public class SimulationPanel : Panel
 
             }
 
-            RenderChangeOnClick(cellX, cellY);
+            RenderChangeOnClick(cellX, cellY, currentGrid);
 
             Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -359,7 +370,7 @@ public class SimulationPanel : Panel
 
             Task.Run(() => {
 
-                RenderChangeOnClick(cellX, cellY);
+                RenderChangeOnClick(cellX, cellY, currentGrid);
 
                 Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -386,7 +397,7 @@ public class SimulationPanel : Panel
 
             Task.Run(() => {
 
-                RenderChangeOnClick(cellX, cellY);
+                RenderChangeOnClick(cellX, cellY, currentGrid);
 
                 Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -410,7 +421,7 @@ public class SimulationPanel : Panel
 
             Task.Run(() => {
 
-                RenderChangeOnClick(cellX, cellY);
+                RenderChangeOnClick(cellX, cellY, currentGrid);
 
                 Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -439,7 +450,7 @@ public class SimulationPanel : Panel
 
             Task.Run(() => {
 
-                RenderChangeOnClick(cellX, cellY);
+                RenderChangeOnClick(cellX, cellY, currentGrid);
 
                 Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -463,7 +474,7 @@ public class SimulationPanel : Panel
 
             Task.Run(() => {
 
-                RenderChangeOnClick(cellX, cellY);
+                RenderChangeOnClick(cellX, cellY, currentGrid);
 
                 Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -492,7 +503,7 @@ public class SimulationPanel : Panel
 
             Task.Run(() => {
 
-                RenderChangeOnClick(cellX, cellY);
+                RenderChangeOnClick(cellX, cellY, currentGrid);
 
                 Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -518,7 +529,7 @@ public class SimulationPanel : Panel
 
             Task.Run(() => {
 
-                RenderChangeOnClick(cellX, cellY);
+                RenderChangeOnClick(cellX, cellY, currentGrid);
 
                 Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -544,7 +555,7 @@ public class SimulationPanel : Panel
 
             }
 
-            RenderChangeOnClick(cellX, cellY);
+            RenderChangeOnClick(cellX, cellY, currentGrid);
 
             Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -566,7 +577,7 @@ public class SimulationPanel : Panel
 
             Task.Run(() => {
 
-                RenderChangeOnClick(cellX, cellY);
+                RenderChangeOnClick(cellX, cellY, currentGrid);
 
                 Invalidate(new Rectangle(0, 0, Width, Height));
 
@@ -576,33 +587,54 @@ public class SimulationPanel : Panel
     }
 
 
-    private void RenderChangeOnClick(int cellX,int cellY)
+    public void RenderChangeOnClick(int cellX,int cellY, int currentGridState)
     {
-        using Graphics g = Graphics.FromImage(gridBitmap[currentGrid]);
+        if (InvokeRequired)
+        {
+            Invoke(new Action(() => RenderChangeOnClick(cellX, cellY, currentGridState)));
+            return;
+        }
+
+        Graphics g = Graphics.FromImage(gridBitmap[currentGridState]);
 
         Color cellColor;
 
-        switch (currentGrid)
+        switch (currentGridState)
         {
             case 0:
-                cellColor = ColorGenerator.GenerateFungiColor(gridState[cellX, cellY, currentGrid]);
-                form.showPanelPanel.UpdateOrganismGrowth( gridState[cellHoveredOnByMouse.X,cellHoveredOnByMouse.Y,0] );
+                cellColor = ColorGenerator.GenerateFungiColor(gridState[cellX, cellY, currentGridState]);
+                Task.Run(() =>
+                {
+                    form.showPanelPanel.UpdateOrganismGrowth(gridState[cellHoveredOnByMouse.X, cellHoveredOnByMouse.Y, 0]);
+                });
                 break;
             case 1:
-                cellColor = ColorGenerator.GenerateFoodColor(gridState[cellX, cellY, currentGrid]);
-                form.showPanelPanel.UpdateFoodAmount(gridState[cellHoveredOnByMouse.X, cellHoveredOnByMouse.Y, 1]);
+                cellColor = ColorGenerator.GenerateFoodColor(gridState[cellX, cellY, currentGridState]);
+                Task.Run(() =>
+                {
+                    form.showPanelPanel.UpdateFoodAmount(gridState[cellHoveredOnByMouse.X, cellHoveredOnByMouse.Y, 1]);
+                });
                 break;
             case 2:
-                cellColor = ColorGenerator.GenerateWaterColor(gridState[cellX, cellY, currentGrid]);
-                form.showPanelPanel.UpdateWaterAmount(gridState[cellHoveredOnByMouse.X, cellHoveredOnByMouse.Y, 2]);
+                cellColor = ColorGenerator.GenerateWaterColor(gridState[cellX, cellY, currentGridState]);
+                Task.Run(() =>
+                {
+                    form.showPanelPanel.UpdateWaterAmount(gridState[cellHoveredOnByMouse.X, cellHoveredOnByMouse.Y, 2]);
+                });
                 break;
             case 3:
-                cellColor = ColorGenerator.GenerateTemperatureColor(gridState[cellX, cellY, currentGrid]);
-                form.showPanelPanel.UpdateTemperature(gridState[cellHoveredOnByMouse.X, cellHoveredOnByMouse.Y, 3]);
+                cellColor = ColorGenerator.GenerateTemperatureColor(gridState[cellX, cellY, currentGridState]);
+                Task.Run(() =>
+                {
+                    form.showPanelPanel.UpdateTemperature(gridState[cellHoveredOnByMouse.X, cellHoveredOnByMouse.Y, 3]);
+                });
                 break;
             case 4:
-                cellColor = ColorGenerator.GenerateObstacleColor(gridState[cellX, cellY, currentGrid]);
-                form.showPanelPanel.UpdateAccessibility(gridState[cellHoveredOnByMouse.X, cellHoveredOnByMouse.Y, 4]);
+                cellColor = ColorGenerator.GenerateObstacleColor(gridState[cellX, cellY, currentGridState]);
+                Task.Run(() =>
+                {
+                    form.showPanelPanel.UpdateAccessibility(gridState[cellHoveredOnByMouse.X, cellHoveredOnByMouse.Y, 4]);
+                });
                 break;
             default:
                 cellColor = Color.FromArgb(30,30,30);
@@ -783,21 +815,27 @@ public class SimulationPanel : Panel
 
     private void SimulationGrowthPanel_MouseMove(object sender, MouseEventArgs e)
     {
-        if ( cellHoveredOnByMouse.X != (e.X - offsetX) / CellSize || cellHoveredOnByMouse.Y != (e.Y - offsetY) / CellSize )
-        {
-            int x = (e.X - offsetX) / CellSize;
-            int y = (e.Y - offsetY) / CellSize;
+        Task.Run(() => {
 
-            cellHoveredOnByMouse.X = x;
-            cellHoveredOnByMouse.Y = y;
-            if (x < gridWidth && y < gridHeight)
+            if (cellHoveredOnByMouse.X != (e.X - offsetX) / CellSize || cellHoveredOnByMouse.Y != (e.Y - offsetY) / CellSize)
             {
-                form.showPanelPanel.UpdateDisplay(x, y, gridState[x, y, 0], gridState[x, y, 1], gridState[x, y, 2], gridState[x, y, 3], gridState[x, y, 4]);
+                int x = (e.X - offsetX) / CellSize;
+                int y = (e.Y - offsetY) / CellSize;
+
+                cellHoveredOnByMouse.X = x;
+                cellHoveredOnByMouse.Y = y;
+                if (x < gridWidth && y < gridHeight)
+                {
+
+                    Task.Run(() =>
+                    {
+                        form.showPanelPanel.UpdateDisplay(x, y, gridState[x, y, 0], gridState[x, y, 1], gridState[x, y, 2], gridState[x, y, 3], gridState[x, y, 4]);
+                    });
+                }
+
             }
-            
-        }
 
-
+        });
 
         if (isDragging)
         {

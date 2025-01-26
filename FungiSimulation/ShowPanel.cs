@@ -42,6 +42,7 @@ namespace FungiSimulation
             g.DrawString($"Water: {WaterAmount}", font, brush, new PointF(120, 10));
             g.DrawString($"Temperature: {Temperature}", font, brush, new PointF(120, 25));
             g.DrawString($"Accessibility: {Accessibility}", font, brush, new PointF(120, 40));
+            g.DrawString($"1 cell is 1 mm^2", font, brush, new PointF(230, 10));
         }
 
         // Method to update the values and refresh the display

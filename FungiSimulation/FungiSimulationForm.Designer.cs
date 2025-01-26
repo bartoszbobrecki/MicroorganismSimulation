@@ -91,9 +91,9 @@ namespace FungiSimulation
             tools.Controls.Add(showPanel);
 
 
-            showPanel.Location = new Point(390, 20);
+            showPanel.Location = new Point(350, 20);
             showPanel.Name = "ShowPanel";
-            showPanel.Size = new Size(303, 70);
+            showPanel.Size = new Size(343, 70);
             showPanel.TabIndex = 1;
             showPanel.TabStop = false;
             showPanel.Text = "";

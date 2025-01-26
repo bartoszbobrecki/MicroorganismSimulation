@@ -50,6 +50,7 @@ public class SimulationPanel : Panel
     private Bitmap[] gridBitmap;
     private float zoomFactor = 1.0f;
     public Point cellHoveredOnByMouse;
+    public List<Branch> branches = [];
 
 
 
@@ -140,8 +141,6 @@ public class SimulationPanel : Panel
 
             });
 
-
-
         }
     }
 
@@ -171,6 +170,15 @@ public class SimulationPanel : Panel
             RenderChangeOnClick(cellX, cellY, currentGrid);
 
             Invalidate(new Rectangle(0, 0, Width, Height));
+
+
+            Point point = new Point(cellX, cellY);
+
+            Random random = new Random();
+
+            double angle = random.NextDouble() * 360;
+
+            branches.Add(new Branch(point, point, true, angle));
 
         }
     }
